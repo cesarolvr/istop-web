@@ -26,7 +26,6 @@ jobs:
         run: yarn build
 
       - name: Upload to S3
-        uses: aws-actions/configure-aws-credentials@v1
         run: |
           aws s3 sync ./public s3://istop-web
         env:
