@@ -6,6 +6,7 @@ jobs:
     name: Istop build
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@master
       # Instala o Node.JS
       - name: Install node.js
         uses: actions/setup-node@v1
