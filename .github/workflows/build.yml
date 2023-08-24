@@ -11,6 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       # Instala o Node.JS
+
       - name: Install node.js
         uses: actions/setup-node@v1
         with:
@@ -24,13 +25,11 @@ jobs:
       - name: Build app
         run: yarn build
 
-      - name: Configure AWS credentials
+      - name: Upload to S3
         uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          role-to-assume: arn:aws:iam::425515330795:role/admin
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-          aws-region: us-east-1
-      - name: Copy files to the production website with the AWS CLI
         run: |
           aws s3 sync ./public s3://istop-web
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
