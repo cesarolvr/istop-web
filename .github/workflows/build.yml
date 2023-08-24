@@ -11,7 +11,7 @@ jobs:
       - name: Install node.js
         uses: actions/setup-node@v1
         with:
-          node-version: "16.x"
+          node-version: "18.x"
 
       # Instala as dependências da aplicação
       - name: Install app dependencies
