@@ -23,11 +23,14 @@ jobs:
 
       # Configura as credenciais da AWS se o ambiente for master
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@master
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: us-east-1
+          permissions:
+            id-token: write
+            contents: read
 
       # Copia o arquivo zipado para o bucket de artefatos
       - name: Copy files to artifact bucket
