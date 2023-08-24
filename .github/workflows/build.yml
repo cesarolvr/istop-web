@@ -5,6 +5,9 @@ jobs:
   build:
     name: Istop build
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - uses: actions/checkout@master
       # Instala o Node.JS
@@ -21,17 +24,12 @@ jobs:
       - name: Build app
         run: yarn build
 
-      # Configura as credenciais da AWS se o ambiente for master
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@master
+        uses: aws-actions/configure-aws-credentials@v3
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: us-east-1
-          permissions:
-            id-token: write
-            contents: read
-
-      # Copia o arquivo zipado para o bucket de artefatos
-      - name: Copy files to artifact bucket
-        run: aws s3 sync ./public s3://istop-web
+      - name: Copy files to the production website with the AWS CLI
+        run: |
+          aws s3 sync ./public s3://istop-web
