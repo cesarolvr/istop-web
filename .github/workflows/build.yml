@@ -35,4 +35,4 @@ jobs:
       
       # Invalida o cloudfront
       - name: Invalidate cloudfront
-        run: aws cloudfront create-invalidation --distribution-id EI0DQ7VKOZ8XL --paths "/*" --region us-west-1
+        run: aws cloudfront create-invalidation --distribution-id EI0DQ7VKOZ8XL --paths "/*" --region us-eest-1
