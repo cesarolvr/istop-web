@@ -1,37 +1,41 @@
+import { navigate } from "gatsby";
 import React, { useEffect, useState } from "react";
-import io from "socket.io-client";
 
-const userAuthenticated = {
-  username: "cesarolvr",
-  email: "cesar2012oliveira@gmail.com",
-  userId: 987371470,
-};
+import Layout from "../components/layout";
+import { useAppContext } from "../contexts";
+import { connectWithWs } from "../services";
 
 const Home = () => {
   const [roomName, setRoomName] = useState("");
-  const [socketInstance, setSocketInstance] = useState(null);
-  const [connectionStatus, setConnectionStatus] = useState(false);
 
-  const disconnect = () => {
-    socketInstance.disconnect();
-    setConnectionStatus(false);
-    setSocketInstance(null);
+  const { auth: userAuthenticated, socketInstance, connectionStatus, setConnectionStatus, setSocketInstance } = useAppContext()
+
+  const startConnectionWithWs = (e) => {
+    const socket = connectWithWs()
+    setSocketInstance(socket);
+    return socket
   };
 
-  const createRoom = () => {
-    socketInstance.emit("create_room", {
-      name: roomName,
+  const createRoom = (ws) => {
+    ws.emit("create_room", {
+      name: `${userAuthenticated.username}-${roomName}`,
       owner: userAuthenticated,
       config: {},
       players: [userAuthenticated],
     });
-  };
+  }
 
-  const connect = (e) => {
+  const connectAndCreateRoom = (e) => {
     e.preventDefault();
+    let socket = socketInstance
 
-    const socket = io("ws://localhost:3000", { reconnection: true });
-    setSocketInstance(socket);
+    if (!connectionStatus) {
+      socket = startConnectionWithWs()
+      setSocketInstance(socket);
+      createRoom(socket)
+    } else {
+      createRoom(socket)
+    }
   };
 
   const handleChange = (e) => {
@@ -46,27 +50,26 @@ const Home = () => {
       });
 
       socketInstance.on("room_created", (event) => {
-        const a = event;
-        console.log(a);
-        debugger;
+        if (event) {
+          navigate(`play/?room=${event}`)
+        }
       });
     }
   }, [socketInstance]);
 
-  useEffect(() => {
-    return () => {
-      disconnect();
-    };
-  }, []);
-
   return (
-    <main>
+    <Layout>
       <form>
         <label>
           Nome da sala:
           <input type="text" onChange={handleChange} />
         </label>
-        <input
+        {
+          roomName ? <>
+            <p>preview do link: {`istop.fun/play/${userAuthenticated.username}-${roomName}`}</p></> : null
+        }
+
+        {/* <input
           type="button"
           onClick={connect}
           disabled={!roomName}
@@ -79,22 +82,20 @@ const Home = () => {
           onClick={disconnect}
         >
           disconnect
-        </button>
+        </button> */}
       </form>
 
       <button
         type="button"
-        disabled={!socketInstance?.connected}
-        onClick={createRoom}
+        // disabled={!socketInstance?.connected}
+        onClick={connectAndCreateRoom}
       >
         create room
       </button>
 
       <p>status: {connectionStatus ? "conectado" : "desconectado"}</p>
-    </main>
+    </Layout>
   );
 };
 
 export default Home;
-
-export const Head = () => <title>Home Page</title>;
