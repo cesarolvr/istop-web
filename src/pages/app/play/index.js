@@ -32,12 +32,6 @@ const Play = () => {
     }
   }, [socketInstance])
 
-  // useEffect(() => {
-  //   const queryParams = new URLSearchParams(document.location.search)
-  //   const room = queryParams.get('room')
-  //   if (!room) return navigate('/')
-  // }, [])
-
   return (
     <PrivateRoute>
       <Layout>{roomName}</Layout>

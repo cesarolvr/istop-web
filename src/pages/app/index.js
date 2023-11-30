@@ -11,12 +11,21 @@ const App = () => {
 
   const {
     auth: userAuthenticated,
-    isLoading,
     socketInstance,
     connectionStatus,
     setConnectionStatus,
     setSocketInstance,
+    cleanAuth,
+    setIsLoading,
   } = useAppContext()
+
+  const endSession = () => {
+    setIsLoading(true)
+    cleanAuth()
+    setIsLoading(false)
+    navigate('/login')
+
+  }
 
   const startConnectionWithWs = (e) => {
     const socket = connectWithWs()
@@ -52,7 +61,6 @@ const App = () => {
   }
 
   useEffect(() => {
-    
     if (socketInstance) {
       socketInstance.on('connection_status', ({ connected }) => {
         setConnectionStatus(connected)
@@ -108,6 +116,11 @@ const App = () => {
         </button>
 
         <p>status: {connectionStatus ? 'conectado' : 'desconectado'}</p>
+
+        <br />
+        <button type="button" onClick={endSession}>
+          exit
+        </button>
       </Layout>
     </PrivateRoute>
   )

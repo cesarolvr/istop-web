@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import Layout from '@components/layout'
 import { useAppContext } from '@contexts'
@@ -9,7 +9,7 @@ const Login = () => {
 
   const logonLogoff = () => {
     const updatedValue = !auth.isLogged
-    updateAuth({ ...auth, isLogged: updatedValue })
+    updateAuth({ isLogged: updatedValue })
   }
 
   return (
@@ -25,7 +25,7 @@ const Login = () => {
         </label>
       </form>
       <br />
-      <Link to="/app">go to app</Link>
+      <Link to="/app">enter</Link>
     </Layout>
   )
 }
