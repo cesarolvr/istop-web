@@ -4,7 +4,22 @@
 module.exports = {
   siteMetadata: {
     title: `istop`,
-    siteUrl: `https://www.yourdomain.tld`
+    siteUrl: `https://www.yourdomain.tld`,
   },
-  plugins: ["gatsby-plugin-sass"]
-};
+  plugins: [
+    'gatsby-plugin-sass',
+    {
+      resolve: `gatsby-plugin-alias-imports`,
+      options: {
+        alias: {
+          '@src': 'src',
+          '@components': 'src/components',
+          '@contexts': 'src/contexts',
+          '@pages': 'src/pages',
+          '@services': 'src/services',
+        },
+        extensions: [],
+      },
+    },
+  ],
+}
