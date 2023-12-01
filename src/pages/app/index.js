@@ -8,6 +8,7 @@ import { connectWithWs } from '@services'
 
 const App = () => {
   const [roomName, setRoomName] = useState('')
+  const [rooms, setRooms] = useState([])
 
   const {
     auth: userAuthenticated,
@@ -24,7 +25,6 @@ const App = () => {
     cleanAuth()
     setIsLoading(false)
     navigate('/login')
-
   }
 
   const startConnectionWithWs = (e) => {
@@ -74,6 +74,17 @@ const App = () => {
     }
   }, [socketInstance])
 
+  useEffect(() => {
+    const getRooms = async () => {
+      const res = await fetch('http://localhost:3000/active-rooms')
+      const rooms = await res.json()
+      console.log(rooms)
+      setRooms(rooms)
+    }
+
+    getRooms()
+  }, [])
+
   return (
     <PrivateRoute>
       <Layout>
@@ -90,32 +101,22 @@ const App = () => {
               </p>
             </>
           ) : null}
-
-          {/* <input
-          type="button"
-          onClick={connect}
-          disabled={!roomName}
-          value="connect"
-        />
-
-        <button
-          type="button"
-          disabled={!socketInstance?.connected}
-          onClick={disconnect}
-        >
-          disconnect
-        </button> */}
         </form>
 
-        <button
-          type="button"
-          // disabled={!socketInstance?.connected}
-          onClick={connectAndCreateRoom}
-        >
+        <button type="button" onClick={connectAndCreateRoom}>
           create room
         </button>
 
         <p>status: {connectionStatus ? 'conectado' : 'desconectado'}</p>
+        <div>
+          <p>rooms:</p>
+          <ul>
+            {rooms.map((item) => {
+              if (!item) return null
+              return <li>{item.name} <span>{item.id}</span></li>
+            })}
+          </ul>
+        </div>
 
         <br />
         <button type="button" onClick={endSession}>

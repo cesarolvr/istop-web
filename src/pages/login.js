@@ -9,7 +9,13 @@ const Login = () => {
 
   const logonLogoff = () => {
     const updatedValue = !auth.isLogged
-    updateAuth({ isLogged: updatedValue })
+    updateAuth({
+      isLogged: updatedValue,
+      username: 'cesarolvr',
+      email: 'cesar2012oliveira@gmail.com',
+      userId: 987371470,
+      token: '423423423',
+    })
   }
 
   return (

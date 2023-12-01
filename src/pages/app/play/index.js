@@ -1,4 +1,4 @@
-import { navigate } from 'gatsby'
+import { Link, navigate } from 'gatsby'
 import React, { useContext, useEffect, useState } from 'react'
 import Layout from '@components/Layout'
 import PrivateRoute from '@components/PrivateRoute'
@@ -15,7 +15,7 @@ const Play = () => {
     if (!room) return navigate('/app/')
 
     if (socketInstance?.connected) {
-      console.log(socketInstance)
+      socketInstance.emit('request_to_join', { auth, roomName: room })
     } else {
       const socket = connectWithWs()
       setSocketInstance(socket)
@@ -32,9 +32,23 @@ const Play = () => {
     }
   }, [socketInstance])
 
+  const deleteRoom = () => {
+    console.log('aaa')
+  }
+
   return (
     <PrivateRoute>
-      <Layout>{roomName}</Layout>
+      <Layout>
+        {roomName}
+        <br />
+        <Link to="/app">voltar</Link>
+        <button type="button" onClick={(f) => f}>
+          leave room
+        </button>
+        <button type="button" onClick={deleteRoom}>
+          delete room
+        </button>
+      </Layout>
     </PrivateRoute>
   )
 }
