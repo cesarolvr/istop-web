@@ -71,19 +71,17 @@ const App = () => {
           navigate(`play/?room=${event}`)
         }
       })
+
+      socketInstance.on('auth', ({ sessionID, userID }) => {
+        // attach the session ID to the next reconnection attempts
+        socketInstance.auth = { sessionID }
+        // store it in the localStorage
+        localStorage.setItem('sessionID', sessionID)
+        // save the ID of the user
+        socketInstance.userID = userID
+      })
     }
   }, [socketInstance])
-
-  useEffect(() => {
-    const getRooms = async () => {
-      const res = await fetch('http://localhost:3000/active-rooms')
-      const rooms = await res.json()
-      console.log(rooms)
-      setRooms(rooms)
-    }
-
-    getRooms()
-  }, [])
 
   return (
     <PrivateRoute>
@@ -113,7 +111,11 @@ const App = () => {
           <ul>
             {rooms.map((item) => {
               if (!item) return null
-              return <li>{item.name} <span>{item.id}</span></li>
+              return (
+                <li>
+                  {item.name} <span>{item.id}</span>
+                </li>
+              )
             })}
           </ul>
         </div>
